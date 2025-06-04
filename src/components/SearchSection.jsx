@@ -145,7 +145,7 @@ const SearchSection = ({ isDarkMode, isLoading, setIsLoading }) => {
   }, []);
 
   const CityDropdown = ({ isOpen, onToggle, selectedCity, onSelect, dropdownRef }) => (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative z-[200]" ref={dropdownRef}>
       <button
         onClick={onToggle}
         className={`w-full pl-10 pr-4 py-3 rounded-lg border ${
@@ -161,7 +161,7 @@ const SearchSection = ({ isDarkMode, isLoading, setIsLoading }) => {
       </button>
       
       {isOpen && (
-        <div className={`absolute top-full left-0 right-0 z-50 mt-1 ${
+        <div className={`absolute top-full left-0 right-0 z-[300] mt-1 ${
           isDarkMode ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-200'
         } border rounded-lg shadow-2xl max-h-60 overflow-y-auto animate-in slide-in-from-top-2 duration-200`}>
           {cities.map((city, index) => (
@@ -194,7 +194,7 @@ const SearchSection = ({ isDarkMode, isLoading, setIsLoading }) => {
   const activeTabConfig = searchTabs.find(tab => tab.id === activeTab);
 
   return (
-    <section className="relative -mt-20 z-20 px-4">
+    <section className="relative -mt-20 z-[1] px-4">
       <div className="max-w-6xl mx-auto">
         <div className={`${
           isDarkMode ? 'bg-gray-800/95' : 'bg-white/95'
@@ -249,17 +249,17 @@ const SearchSection = ({ isDarkMode, isLoading, setIsLoading }) => {
           </div>
 
           {/* Dynamic Search Form */}
-          <div className={`grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 transition-all duration-300 ${
+          <div className={`grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 transition-all duration-300 relative z-[100] ${
             morphingFields.morphing ? 'opacity-50 scale-95' : 'opacity-100 scale-100'
           }`}>
             {currentFields.map((field, index) => (
-              <div key={`${activeTab}-${field.key}`} className="space-y-2" style={{ animationDelay: `${index * 100}ms` }}>
+              <div key={`${activeTab}-${field.key}`} className="space-y-2 relative z-[150]" style={{ animationDelay: `${index * 100}ms` }}>
                 <label className="text-sm font-medium text-gray-600 dark:text-gray-300 flex items-center space-x-1">
                   <field.icon size={16} />
                   <span>{field.label}</span>
                 </label>
-                <div className="relative">
-                  <field.icon className="absolute left-3 top-3 text-gray-400" size={20} />
+                <div className="relative z-[150]">
+                  <field.icon className="absolute left-3 top-3 text-gray-400 z-10" size={20} />
                   
                   {field.type === 'city' && field.key === 'from' && (
                     <CityDropdown
@@ -314,41 +314,43 @@ const SearchSection = ({ isDarkMode, isLoading, setIsLoading }) => {
           </div>
 
           {/* Enhanced Search Button */}
-          <button
-            onClick={handleSearch}
-            disabled={isLoading}
-            className={`w-full bg-gradient-to-r ${activeTabConfig?.color || 'from-blue-600 to-purple-600'} text-white font-semibold py-4 rounded-xl hover:shadow-2xl transition-all duration-500 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group`}
-          >
-            {isLoading ? (
-              <div className="flex items-center justify-center space-x-3">
-                <div className="relative">
-                  <div className="w-8 h-8 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
-                  <div className="absolute inset-0 w-8 h-8 border-4 border-transparent border-r-white/50 rounded-full animate-spin animation-delay-75"></div>
+          <div className="relative z-10">
+            <button
+              onClick={handleSearch}
+              disabled={isLoading}
+              className={`w-full bg-gradient-to-r ${activeTabConfig?.color || 'from-blue-600 to-purple-600'} text-white font-semibold py-4 rounded-xl hover:shadow-2xl transition-all duration-500 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group`}
+            >
+              {isLoading ? (
+                <div className="flex items-center justify-center space-x-3">
+                  <div className="relative">
+                    <div className="w-8 h-8 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    <div className="absolute inset-0 w-8 h-8 border-4 border-transparent border-r-white/50 rounded-full animate-spin animation-delay-75"></div>
+                  </div>
+                  <span className="text-lg">Searching {activeTabConfig?.label}...</span>
+                  <div className="flex space-x-1">
+                    <div className="w-2 h-2 bg-white rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-white rounded-full animate-bounce animation-delay-100"></div>
+                    <div className="w-2 h-2 bg-white rounded-full animate-bounce animation-delay-200"></div>
+                  </div>
                 </div>
-                <span className="text-lg">Searching {activeTabConfig?.label}...</span>
-                <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-white rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-white rounded-full animate-bounce animation-delay-100"></div>
-                  <div className="w-2 h-2 bg-white rounded-full animate-bounce animation-delay-200"></div>
-                </div>
-              </div>
-            ) : (
-              <span className="flex items-center justify-center space-x-3 text-lg">
-                <Search size={24} className="group-hover:animate-pulse" />
-                <span>Search {activeTabConfig?.label}</span>
-                <div className="w-0 group-hover:w-8 h-8 bg-white/20 rounded-full transition-all duration-300 flex items-center justify-center">
-                  <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">→</span>
-                </div>
-              </span>
-            )}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 skew-x-12"></div>
-          </button>
+              ) : (
+                <span className="flex items-center justify-center space-x-3 text-lg">
+                  <Search size={24} className="group-hover:animate-pulse" />
+                  <span>Search {activeTabConfig?.label}</span>
+                  <div className="w-0 group-hover:w-8 h-8 bg-white/20 rounded-full transition-all duration-300 flex items-center justify-center">
+                    <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">→</span>
+                  </div>
+                </span>
+              )}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 skew-x-12"></div>
+            </button>
+          </div>
 
           {/* Live Search Results */}
           {showResults && searchResults.length > 0 && (
             <div className={`mt-6 ${
               isDarkMode ? 'bg-gray-900/50' : 'bg-gray-50/50'
-            } rounded-xl p-4 backdrop-blur-sm animate-in slide-in-from-bottom-4 duration-500`}>
+            } rounded-xl p-4 backdrop-blur-sm animate-in slide-in-from-bottom-4 duration-500 relative z-10`}>
               <h3 className="text-lg font-semibold mb-4 flex items-center space-x-2">
                 <Star className="text-yellow-500" size={20} />
                 <span>Top Results</span>
